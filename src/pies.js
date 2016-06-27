@@ -134,7 +134,10 @@ export default function pies(id) {
       }
       tnode.call(root);
       
-      let elmS = node.select(root.self()).select(root.child());
+      let elmSVG = node.select(root.self());
+      let elmD = elmSVG.select('defs');
+
+      let elmS = elmSVG.select(root.child());
 
       // Tip
       let tid = null;
@@ -150,6 +153,9 @@ export default function pies(id) {
         g = elmS.append('g').attr('class', classed).attr('id', id);
         g.append('g').attr('class', 'legend');
         g.append('g').attr('class', 'pie');
+      
+        elmD.append('path').attr('id', 'text-outer');
+        elmD.append('path').attr('id', 'text-inner');
       }
 
       let data = g.datum() || [ 1 ];
