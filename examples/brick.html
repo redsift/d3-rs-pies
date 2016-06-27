@@ -1,0 +1,32 @@
+<html>
+  <head>
+    <style>
+      
+    body {
+      margin: 0px;
+    }
+
+    </style>    
+  </head>
+  <body>
+    <div id="elm"></div>
+        
+    <script src="https://d3js.org/d3.v4.0.0-alpha.49.js"></script>
+    <script src="/d3-rs-pies.umd-es2015.js"></script>
+    <script>
+
+    'use strict';
+
+    d3.select('#elm').call(d3_rs_pies.html('empty'));
+    
+    d3.select('#elm').datum([ 1, 4, 6, 2, 8, 9 ]).call(d3_rs_pies.html('basic').innerRadius(70));
+
+    d3.select('#elm').datum([ { v: 50000, l: 'Lot' }, 30000, { v: 20000, l: 'Some' } ]).call(d3_rs_pies.html('basic-legend').legend([ 'A', 'B' ]));
+
+    d3.select('#elm').datum([ 50, 30, 20 ]).call(d3_rs_pies.html('basic-offset').startAngle(1).endAngle(5).displayFormatValue('.1f'));
+
+    d3.select('#elm').datum([ 1, 4, 6, 2, 8, 9, 7 ,6, 4 ]).call(d3_rs_pies.html('basic-pad').innerRadius(70).padAngle(0.05));
+
+    </script>
+  </body>
+</html>
