@@ -31,16 +31,11 @@
   "dependencies": {
     "d3-selection": "^1.0.0",
     "d3-shape": "^1.0.0",
-    "d3-array": "^1.0.0",
-    "d3-scale": "^1.0.0",
-    "d3-axis": "^1.0.0",
-    "d3-format": "git://github.com/d3/d3-format",
-    "d3-time-format": "git://github.com/d3/d3-time-format",
-    "d3-time": "^1.0.0",
+    "d3-format": "^1.0.0",
     "@redsift/d3-rs-svg": "~0.2.3",
     "@redsift/d3-rs-theme": "~0.0.2",
     "@redsift/d3-rs-tip": "~0.2.3",     
-    "@redsift/d3-rs-intl": "~0.0.1"
+    "@redsift/d3-rs-intl": "~0.0.2"
   },
   "devDependencies": {
     "@redsift/tape-reel": "~0.0.2",
