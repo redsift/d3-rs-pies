@@ -13,9 +13,9 @@ import {
 } from '@redsift/d3-rs-theme';
 
 const DEFAULT_SIZE = 270;
-const DEFAULT_ASPECT = 270 / 230;
-const DEFAULT_MARGIN = 40;  // white space
-const DEFAULT_INSET = 24;   // scale space
+const DEFAULT_ASPECT = 1;
+const DEFAULT_MARGIN = 12;  // white space
+const DEFAULT_INSET = 0;   // scale space
 const DEFAULT_LEGEND_SIZE = 10;
 const DEFAULT_LEGEND_PADDING_X = 8;
 const DEFAULT_LEGEND_PADDING_Y = 24;
@@ -48,7 +48,7 @@ export default function pies(id) {
       displayValue = null,
       displayFormatValue = null,
       innerRadius = 0,
-      outerRadius = 100,
+      outerRadius = null,
       startAngle = 0,
       endAngle = 2 * Math.PI,
       padAngle = 0,
@@ -200,18 +200,28 @@ export default function pies(id) {
       }            
       
       let colors = _makeFillFn();
+      
+      let radius = outerRadius;
+      if (radius == null) {
+        radius = (Math.min(w, h) - 2 * inset) / 2;
+      }
+      let inner = innerRadius;
+      if (inner < 0.0) {
+        inner = (1 + inner) * radius;
+      }
       let arcs = arc()
-            .innerRadius(innerRadius)
-            .outerRadius(outerRadius)
+            .innerRadius(inner)
+            .outerRadius(radius)
             .cornerRadius(cornerRadius !== null ? cornerRadius : (padAngle > 0.0 ? DEFAULT_CORNER_RADIUS : 0));
       
       let piel = pie().sortValues(null).sort(null)
                     .padAngle(padAngle)
                     .startAngle(startAngle)
                     .endAngle(endAngle); // TODO: Support?
-            
+      
+      let centerX = w / 2;          
       let pies = g.select('g.pie')
-                  .attr('transform', 'translate(' + outerRadius + ',' + outerRadius + ')')
+                  .attr('transform', 'translate(' + centerX + ',' + (radius + inset) + ')')
                   .selectAll('g.slice').data(piel(vdata));  
       pies.exit().remove();
       let newSlices = pies.enter().append('g').attr('class', 'slice');
@@ -225,12 +235,16 @@ export default function pies(id) {
 
       let texts = pies.selectAll('text').data(d => [ d ]);
       texts.attr('transform', function(d) { 
-                d.innerRadius = innerRadius;
+                d.innerRadius = inner;
                 d.outerRadius = outerRadius;
                 return 'translate(' + arcs.centroid(d) + ')';        
             })
             .attr('fill', d => contrasts.white(colors(d.data, d.index)) ? display.text.white : display.text.black )
-            .text(d => data[d.index].l != null ? data[d.index].l : displayFn(d.value));
+            .text(function (d) {
+              let label = data[d.index].l || displayFn(d.value);
+              if (d.endAngle - d.startAngle < 0.1) return null; //TODO: smarter threshold for this
+              return label;
+            });
     });
     
   }

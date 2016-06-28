@@ -5,6 +5,11 @@
     body {
       margin: 0px;
     }
+    
+    svg {
+      background-color: antiquewhite;
+      margin: 1em;
+    }
 
     </style>    
   </head>
@@ -25,7 +30,9 @@
 
     d3.select('#elm').datum([ 50, 30, 20 ]).call(d3_rs_pies.html('basic-offset').startAngle(1).endAngle(5).displayFormatValue('.1f'));
 
-    d3.select('#elm').datum([ 1, 4, 6, 2, 8, 9, 7 ,6, 4 ]).call(d3_rs_pies.html('basic-pad').innerRadius(70).padAngle(0.05));
+    d3.select('#elm').datum([ 1, 4, 6, 2, 8, 9, 7 ,6, 4 ]).call(d3_rs_pies.html('basic-pad').innerRadius(-0.2).padAngle(0.05));
+
+    d3.select('#elm').datum([ 868, 9, 161, 464 ]).call(d3_rs_pies.html('data').size(400).legend(['(none)', 'email', 'organic', 'referral']));
 
     </script>
   </body>
