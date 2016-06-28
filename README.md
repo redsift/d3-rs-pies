@@ -55,3 +55,5 @@ Property|Description|Transition|Preview
 `classed`|*String* SVG custom class|N
 `width`, `height`, `size`, `scale`|*Integer* SVG container sizes|Y
 `style`|*String* Custom CSS to inject into chart|N
+`outerRadius`|*Integer* Radius of the pie
+`innerRadius`|*Number* > 0 the radius of the inner region in pixels. < 0, the unit inner radius as a function of the outerRadius

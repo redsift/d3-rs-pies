@@ -1,6 +1,6 @@
 {
   "name": "@redsift/d3-rs-pies",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Generates pie charts using D3v4.",
   "keywords": [
     "pie",
@@ -22,8 +22,8 @@
     "url": "https://github.com/redsift/d3-rs-pies.git"
   },
   "scripts": {
-    "serve": "gulp -o d3-rs-pies -g d3-selection -g d3-shape -g d3-array -g d3-scale -g d3-axis serve",
-    "build": "gulp -o d3-rs-pies -g d3-selection -g d3-shape -g d3-array -g d3-scale -g d3-axis build",
+    "serve": "gulp -o d3-rs-pies -g d3-selection -g d3-shape serve",
+    "build": "gulp -o d3-rs-pies -g d3-selection -g d3-shape build",
     "pretest": "npm outdated && npm run build",
     "test": "tape 'test/**/*-test.js' && eslint index.js src",
     "prepublish": "npm run build"
