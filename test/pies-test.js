@@ -19,19 +19,23 @@ tape("html() single", function(t) {
     var el = d3.select('#test');
     el.datum([ 1 ]).call(host);
     
-    t.equal(el.selectAll('path').size(), 1);
-    t.equal(el.selectAll('text').size(), 1);
+    var p = el.select(host.self());
+    
+    t.equal(p.selectAll('path').size(), 1);
+    t.equal(p.selectAll('text').size(), 1);
            
     t.end();
 });
 
-tape("html() single", function(t) {
+tape("html() dual", function(t) {
     var host = pies.html();
     var el = d3.select('#test');
     el.datum([ 1, 1 ]).call(host);
     
-    t.equal(el.selectAll('path').size(), 2);
-    t.equal(el.selectAll('text').size(), 2);
+    var p = el.select(host.self());
+    
+    t.equal(p.selectAll('path').size(), 2);
+    t.equal(p.selectAll('text').size(), 2);
            
     t.end();
 });
