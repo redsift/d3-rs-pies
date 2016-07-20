@@ -2,9 +2,10 @@
 import { select } from 'd3-selection';
 import { arc, pie } from 'd3-shape';
 import { format, formatDefaultLocale } from 'd3-format';
+import { timeFormat, timeFormatLocale } from 'd3-time-format';
 
 import { html as svg } from '@redsift/d3-rs-svg';
-import { units } from "@redsift/d3-rs-intl";
+import { units, time } from "@redsift/d3-rs-intl";
 import { tip } from "@redsift/d3-rs-tip";
 import { 
   contrasts as contrasts,
@@ -53,6 +54,7 @@ export default function pies(id) {
       endAngle = 2 * Math.PI,
       padAngle = 0,
       cornerRadius = null,
+      labelTime = null,
       value = function (d) {
         if (Array.isArray(d)) {
           return d;
@@ -118,6 +120,17 @@ export default function pies(id) {
           }
         }
       }
+    }
+    
+    let _label = labelTime;
+    if (_label == null) {
+      _label = x => x;
+    } else if (typeof labelTime === 'function') {
+        // noop      
+    } else {
+      let localeTime = time(language).d3;
+      let tf = timeFormatLocale(localeTime);
+      _label = tf.format(labelTime);          
     }
        
     selection.each(function() {
@@ -243,7 +256,7 @@ export default function pies(id) {
             .text(function (d) {
               let label = data[d.index].l || displayFn(d.value);
               if (d.endAngle - d.startAngle < 0.1) return null; //TODO: smarter threshold for this
-              return label;
+              return _label(label);
             });
     });
     
@@ -346,6 +359,10 @@ export default function pies(id) {
   _impl.displayFormatValue = function(value) {
     return arguments.length ? (displayFormatValue = value, _impl) : displayFormatValue;
   };     
+  
+  _impl.labelTime = function(value) {
+    return arguments.length ? (labelTime = value, _impl) : labelTime;
+  };   
               
   return _impl;
 }
