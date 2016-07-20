@@ -3,6 +3,7 @@ import { select } from 'd3-selection';
 import { arc, pie } from 'd3-shape';
 import { format, formatDefaultLocale } from 'd3-format';
 import { timeFormat, timeFormatLocale } from 'd3-time-format';
+import { interpolate } from 'd3-interpolate'
 
 import { html as svg } from '@redsift/d3-rs-svg';
 import { units, time } from "@redsift/d3-rs-intl";
@@ -244,9 +245,30 @@ export default function pies(id) {
       pies = newSlices.merge(pies);
       
       let paths = pies.selectAll('path').data(d => [ d ]);
-      paths.attr('d', arcs).attr('fill', d => colors(d.data, d.index));
-
       let texts = pies.selectAll('text').data(d => [ d ]);
+            
+      if (transition === true) {
+        paths = paths.transition(context);
+        texts = texts.transition(context);
+      }
+            
+      paths.attr('fill', d => colors(d.data, d.index));
+      
+      function tweenPie(b) {
+        let previous = this._previous || { startAngle: 0, endAngle: 0 };
+
+        let i = interpolate(previous, b);
+        this._previous = b;
+        
+        return t => arcs(i(t));
+      }
+            
+      if (paths.attrTween) {
+        paths.attrTween('d', tweenPie);
+      } else {
+        paths.attr('d', arcs).each(function(d) { this._previous = d; });
+      }
+      
       texts.attr('transform', function(d) { 
                 d.innerRadius = inner;
                 d.outerRadius = outerRadius;
