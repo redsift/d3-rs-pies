@@ -6,32 +6,24 @@ import { timeFormat, timeFormatLocale } from 'd3-time-format';
 import { interpolate } from 'd3-interpolate'
 
 import { html as svg } from '@redsift/d3-rs-svg';
+import { svg as legends } from '@redsift/d3-rs-legends';
 import { units, time } from "@redsift/d3-rs-intl";
-import { tip } from "@redsift/d3-rs-tip";
+import { body as tip } from "@redsift/d3-rs-tip";
 import { 
-  contrasts as contrasts,
-  presentation10 as presentation10,
-  display as display
+  contrasts,
+  presentation10,
+  display,
+  fonts
 } from '@redsift/d3-rs-theme';
 
 const DEFAULT_SIZE = 270;
 const DEFAULT_ASPECT = 1;
 const DEFAULT_MARGIN = 12;  // white space
-const DEFAULT_INSET = 0;   // scale space
-const DEFAULT_LEGEND_SIZE = 10;
-const DEFAULT_LEGEND_PADDING_X = 8;
-const DEFAULT_LEGEND_PADDING_Y = 24;
-const DEFAULT_LEGEND_TEXT_SCALE = 8; // hack value to do fast estimation of length of string
+const DEFAULT_INSET = 8;   // scale space
 const DEFAULT_CORNER_RADIUS = 3;
 const DEFAULT_TICK_FORMAT_VALUE = ',.0f';
 const DEFAULT_TICK_FORMAT_VALUE_SI = '.2s';
 const DEFAULT_TICK_FORMAT_VALUE_SMALL = '.3f';
-
-// Font fallback chosen to keep presentation on places like GitHub where Content Security Policy prevents inline SRC
-const DEFAULT_STYLE = [ "@import url(https://fonts.googleapis.com/css?family=Source+Code+Pro:300);",
-                        "text{ font-family: 'Source Code Pro', Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-weight: 300; }",
-                        ".legend text { font-size: 12px }"
-                      ].join(' \n');
 
 export default function pies(id) {
   let classed = 'chart-pies', 
@@ -40,12 +32,13 @@ export default function pies(id) {
       width = DEFAULT_SIZE,
       height = null,
       margin = DEFAULT_MARGIN,
-      style = DEFAULT_STYLE,
+      style = undefined,
       scale = 1.0,
       inset = DEFAULT_INSET,
       language = null,
       displayTip = -1,
       legend = [ ],
+      legendOrientation = 'bottom',
       fill = null,
       displayValue = null,
       displayFormatValue = null,
@@ -56,6 +49,7 @@ export default function pies(id) {
       padAngle = 0,
       cornerRadius = null,
       labelTime = null,
+      tipHtml = undefined,
       value = function (d) {
         if (Array.isArray(d)) {
           return d;
@@ -133,15 +127,45 @@ export default function pies(id) {
       let tf = timeFormatLocale(localeTime);
       _label = tf.format(labelTime);          
     }
+    
+    let _tipHtml = tipHtml;
+    if (_tipHtml === undefined) {
+      _tipHtml = d => d;
+    }
        
     selection.each(function() {
       let node = select(this);  
       let sh = height || Math.round(width * DEFAULT_ASPECT);
       
+      let lchart = null;
+      if (legend.length > 0) {
+        lchart = legends();
+      }
+            
       // SVG element
       let sid = null;
       if (id) sid = 'svg-' + id;
       let root = svg(sid).width(width).height(sh).margin(margin).scale(scale);
+
+      let tid = null;
+      if (id) tid = 'tip-' + id;
+      let rtip = tip(tid).theme(theme).html(_tipHtml).style(null);
+
+      let _style = style,
+          w = root.childWidth(),
+          h = root.childHeight();
+      
+      if (_style === undefined) {
+        _style = _impl.defaultStyle(w, theme);
+
+        _style += rtip.defaultStyle(theme);
+        
+        if (lchart != null) {
+          _style += lchart.defaultStyle(w, theme);
+        }
+      }
+      root.style(_style);
+
       let tnode = node;
       if (transition === true) {
         tnode = node.transition(context);
@@ -149,17 +173,19 @@ export default function pies(id) {
       tnode.call(root);
       
       let elmSVG = node.select(root.self());
+      elmSVG.call(rtip);
       let elmD = elmSVG.select('defs');
 
       let elmS = elmSVG.select(root.child());
 
-      // Tip
-      let tid = null;
-      if (id) tid = 'tip-' + id;
-      let rtip = tip(tid).html((d) => d);
-      let st = style + ' ' + rtip.style();
-      rtip.style(st);
-      elmS.call(rtip);
+      let _inset = inset;
+      if (_inset == null) {
+        _inset = { top: DEFAULT_INSET, bottom: DEFAULT_INSET, left: DEFAULT_INSET, right: DEFAULT_INSET };
+      } else if (typeof _inset === 'object') {
+        _inset = { top: _inset.top, bottom: _inset.bottom, left: _inset.left, right: _inset.right };
+      } else {
+        _inset = { top: _inset, bottom: _inset, left: _inset, right: _inset };
+      }  
     
       // Create required elements
       let g = elmS.select(_impl.self())
@@ -178,46 +204,22 @@ export default function pies(id) {
       
       g.datum(vdata); // this rebind is required even though there is a following select
                        
-      let w = root.childWidth(),
-          h = root.childHeight();
-      
-      // Create the legend
-      if (legend.length > 0) {
-        h = h - (DEFAULT_LEGEND_SIZE + DEFAULT_LEGEND_PADDING_Y);
-        let rg = g.select('g.legend');
-        let lg = rg.attr('transform', 'translate(' + (w/2) + ',' + (h + DEFAULT_LEGEND_PADDING_Y) + ')').selectAll('g').data(legend);
-        lg.exit().remove();
-        let newlg = lg.enter().append('g');
-        
-        let colors = _makeFillFn();
+      let solo = vdata.length < 2;
 
-        newlg.append('rect')
-              .attr('width', DEFAULT_LEGEND_SIZE)
-              .attr('height', DEFAULT_LEGEND_SIZE)
-              .attr('fill', colors);
-
-        newlg.append('text')
-          .attr('dominant-baseline', 'central')
-          .attr('y', DEFAULT_LEGEND_SIZE / 2)
-          .attr('x', () => DEFAULT_LEGEND_SIZE + DEFAULT_LEGEND_PADDING_X);
-              
-        lg = newlg.merge(lg);
-
-        lg.selectAll('text').text((d) => d);
-
-        let lens = legend.map((s) => s.length * DEFAULT_LEGEND_TEXT_SCALE + DEFAULT_LEGEND_SIZE + 2 * DEFAULT_LEGEND_PADDING_X);
-        let clens = []
-        let total = lens.reduce((p, c) => (clens.push(p) , p + c), 0);
-        
-        let offset = -total / 2;
-        rg.selectAll('g').data(clens).attr('transform', (d) => 'translate(' + (offset + d) + ',0)');
-      }            
-      
       let colors = _makeFillFn();
+
+      // Create the legend
+      if (lchart != null) {
+        lchart = lchart.width(w).height(h).inset(0).fill(colors).theme(theme).orientation(legendOrientation);
+
+        _inset = lchart.childInset(_inset);
+
+        elmS.datum(legend).call(lchart);
+      }
       
       let radius = outerRadius;
       if (radius == null) {
-        radius = (Math.min(w, h) - 2 * inset) / 2;
+        radius = Math.min(w - (_inset.left + _inset.right), h - (_inset.top + _inset.bottom)) / 2;
       }
       let inner = innerRadius;
       if (inner < 0.0) {
@@ -234,28 +236,44 @@ export default function pies(id) {
                     .endAngle(endAngle); // TODO: Support?
       
       let centerX = w / 2;          
+      let pdata = piel(vdata);
+      
       let pies = g.select('g.pie')
-                  .attr('transform', 'translate(' + centerX + ',' + (radius + inset) + ')')
-                  .selectAll('g.slice').data(piel(vdata));  
-      pies.exit().remove();
-      let newSlices = pies.enter().append('g').attr('class', 'slice');
-      newSlices.append('path');
-      newSlices.append('text').attr('text-anchor', 'middle').attr('dominant-baseline', 'middle');
-      
-      pies = newSlices.merge(pies);
-      
-      let paths = pies.selectAll('path').data(d => [ d ]);
-      let texts = pies.selectAll('text').data(d => [ d ]);
-            
+                  .attr('transform', 'translate(' + centerX + ',' + (radius + _inset.top) + ')');
+                  
+      let slicesPaths = pies.select('g.slices');
+      if (slicesPaths.empty()) {
+        slicesPaths = pies.append('g').attr('class', 'slices');
+      }        
+      let paths = slicesPaths.selectAll('path').data(pdata);  
+      paths.exit().remove();
+      paths = paths.enter().append('path').merge(paths);
+
+      paths.attr('pointer-events', 'all')
+            .on('mouseover', function (d) {
+              rtip.show.apply(this, [ d.data, d.index ]);
+            })
+            .on('mouseout', rtip.hide);
+          
+      let texts = pies.selectAll('text').data(pdata);  
+      texts.exit().remove();
+      texts = texts.enter()
+            .append('text')
+              .attr('text-anchor', 'middle')
+              .attr('dominant-baseline', 'middle')
+              .attr('pointer-events', 'none')
+            .merge(texts);
+         
       if (transition === true) {
         paths = paths.transition(context);
         texts = texts.transition(context);
       }
             
       paths.attr('fill', d => colors(d.data, d.index));
+      rtip.hide();
       
       function tweenPie(b) {
-        let previous = this._previous || { startAngle: 0, endAngle: 0 };
+        let previous = this._previous || { startAngle: startAngle, endAngle: endAngle };
 
         let i = interpolate(previous, b);
         this._previous = b;
@@ -270,16 +288,20 @@ export default function pies(id) {
       }
       
       texts.attr('transform', function(d) { 
-                d.innerRadius = inner;
-                d.outerRadius = outerRadius;
-                return 'translate(' + arcs.centroid(d) + ')';        
-            })
-            .attr('fill', d => contrasts.white(colors(d.data, d.index)) ? display.text.white : display.text.black )
-            .text(function (d) {
-              let label = data[d.index].l || displayFn(d.value);
-              if (d.endAngle - d.startAngle < 0.1) return null; //TODO: smarter threshold for this
-              return _label(label);
-            });
+        if (solo) {
+          return 'translate(0,0)';   
+        } else {
+          d.innerRadius = inner;
+          d.outerRadius = outerRadius;
+          return `translate(${arcs.centroid(d)})`;   
+        }     
+      })
+      .attr('fill', d => contrasts.white(colors(d.data, d.index)) ? display.dark.text : display.light.text)
+      .text(function (d) {
+        let label = data[d.index].l || displayFn(d.value);
+        if (d.endAngle - d.startAngle < 0.3) return null; //TODO: smarter threshold for this
+        return _label(label);
+      });
     });
     
   }
@@ -289,6 +311,17 @@ export default function pies(id) {
   _impl.id = function() {
     return id;
   };
+  
+  _impl.defaultStyle = (_width, _theme) => `
+                  ${fonts.fixed.cssImport}
+                  
+                  ${_impl.self()} g.pie text { 
+                      font-family: ${fonts.fixed.family};
+                      font-size: ${fonts.fixed.sizeForWidth(_width)};     
+                      font-weight: ${fonts.fixed.weightMonochrome};      
+                       
+                    }
+  `;
     
   _impl.classed = function(value) {
     return arguments.length ? (classed = value, _impl) : classed;
@@ -341,6 +374,10 @@ export default function pies(id) {
   _impl.legend = function(value) {
     return arguments.length ? (legend = _coerceArray(value), _impl) : legend;
   }; 
+
+  _impl.legendOrientation = function(value) {
+    return arguments.length ? (legendOrientation = value, _impl) : legendOrientation;
+  };  
    
   _impl.displayTip = function(value) {
     return arguments.length ? (displayTip = value, _impl) : displayTip;
@@ -384,6 +421,10 @@ export default function pies(id) {
   
   _impl.labelTime = function(value) {
     return arguments.length ? (labelTime = value, _impl) : labelTime;
+  };   
+  
+  _impl.tipHtml = function(value) {
+    return arguments.length ? (tipHtml = value, _impl) : tipHtml;
   };   
               
   return _impl;

@@ -39,8 +39,8 @@
           .call(d3_rs_pies.html('time').labelTime("%a %d"));
 
     let animated = d3_rs_pies.html('animate');       
-    d3.select('#elm').datum([ 1 ]).call(animated);
-    setInterval(() => d3.select('#elm').datum([ Math.random(), Math.random() ]).transition().call(animated), 1000)
+    d3.select('#elm').datum([ 1, 2 ]).call(animated);
+    setInterval(() => d3.select('#elm').datum([ Math.random(), Math.random(), Math.random() ]).transition().call(animated), 1000)
 
     </script>
   </body>
