@@ -1,14 +1,14 @@
 # d3-rs-pies
 
-`d3-rs-pies` generate a range of pie charts.
+[![Circle CI](https://img.shields.io/circleci/project/redsift/d3-rs-pies.svg?style=flat-square)](https://circleci.com/gh/redsift/d3-rs-pies)
+[![npm](https://img.shields.io/npm/v/@redsift/d3-rs-pies.svg?style=flat-square)](https://www.npmjs.com/package/@redsift/d3-rs-pies)
+[![MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://raw.githubusercontent.com/redsift/d3-rs-pies/master/LICENSE)
 
-## Builds
-
-[![Circle CI](https://circleci.com/gh/Redsift/d3-rs-pies.svg?style=svg)](https://circleci.com/gh/Redsift/d3-rs-pies)
+`d3-rs-pies` generate a range of pie charts via the D3 reusable chart convention.
 
 ## Example
 
-[View @redsift/d3-rs-pies on Codepen](http:...)
+[View @redsift/d3-rs-pies on Codepen](http://codepen.io/rahulpowar/pen/eBWKoB)
 
 ### Line chart
 
