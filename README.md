@@ -10,9 +10,17 @@
 
 [View @redsift/d3-rs-pies on Codepen](http://codepen.io/rahulpowar/pen/eBWKoB)
 
-![Simple pie chart](https://bricks.redsift.io/reusable/d3-rs-pies.svg?_datum=[20,200,3100,1000]&legend=20&legend=200)
+### Simple pie chart
 
-![More data](https://bricks.redsift.cloud/reusable/d3-rs-pies?scale=2&_datum=%5B%7B%22l%22%3A%22(direct)%22%2C%22v%22%3A108%7D%2C%7B%22l%22%3A%22google%22%2C%22v%22%3A105%7D%2C%7B%22l%22%3A%22crunchbase.com%22%2C%22v%22%3A19%7D%2C%7B%22l%22%3A%22techcrunch.com%22%2C%22v%22%3A16%7D%2C%7B%22l%22%3A%22Others%22%2C%22v%22%3A77%7D%5D)
+![Simple pie chart](https://bricks.redsift.cloud/reusable/d3-rs-pies.svg?_datum=%5B%7B%22l%22%3A%22(direct)%22%2C%22v%22%3A108%7D%2C%7B%22l%22%3A%22google%22%2C%22v%22%3A105%7D%2C%7B%22l%22%3A%22crunchbase.com%22%2C%22v%22%3A19%7D%2C%7B%22l%22%3A%22techcrunch.com%22%2C%22v%22%3A16%7D%2C%7B%22l%22%3A%22Others%22%2C%22v%22%3A77%7D%5D)
+
+### Pie chart with legend
+
+![With legend](https://bricks.redsift.cloud/reusable/d3-rs-pies.svg?_datum=[20,200,3100,1000]&legend=20&legend=200)
+
+### Inner radius and padded
+
+![Inner radius](https://bricks.redsift.cloud/reusable/d3-rs-pies.svg?_datum=[1,4,6,2,8,9,7,6,4]&innerRadius=-0.2&padAngle=0.05)
 
 ## Usage
 
