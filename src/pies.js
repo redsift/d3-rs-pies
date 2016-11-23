@@ -2,7 +2,7 @@
 import { select } from 'd3-selection';
 import { arc, pie } from 'd3-shape';
 import { format, formatDefaultLocale } from 'd3-format';
-import { timeFormat, timeFormatLocale } from 'd3-time-format';
+import { timeFormatLocale } from 'd3-time-format';
 import { interpolate } from 'd3-interpolate'
 
 import { html as svg } from '@redsift/d3-rs-svg';
@@ -312,7 +312,7 @@ export default function pies(id) {
     return id;
   };
   
-  _impl.defaultStyle = (_width, _theme) => `
+  _impl.defaultStyle = (_width) => `
                   ${fonts.fixed.cssImport}
                   
                   ${_impl.self()} g.pie text { 
