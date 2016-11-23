@@ -42,6 +42,16 @@
     d3.select('#elm').datum([ 1, 2 ]).call(animated);
     setInterval(() => d3.select('#elm').datum([ Math.random(), Math.random(), Math.random() ]).transition().call(animated), 1000)
 
+    d3.select('#elm').datum([ 
+      { l: 'United Kingdom', v: 130 },
+      { l: 'United States', v: 51 },
+      { l: 'India', v: 18 },
+      { l: 'Australia', v: 8 },
+      { l: 'Others', v: 102 } 
+    ]).call(d3_rs_pies.html('real').legend([ null, null, null, 'Australia' ]));
+
+
+
     </script>
   </body>
 </html>
