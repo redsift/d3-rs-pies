@@ -10,17 +10,9 @@
 
 [View @redsift/d3-rs-pies on Codepen](http://codepen.io/rahulpowar/pen/eBWKoB)
 
-### Line chart
+![Simple pie chart](https://bricks.redsift.io/reusable/d3-rs-pies.svg?_datum=[20,200,3100,1000]&legend=20&legend=200)
 
-![Sample bars with a bottom orientation](https://bricks.redsift.io/reusable/d3-rs-pies.svg?_datum=[1,200,3100,1000]&orientation=bottom)
-
-### Area chart
-
-![Sample bars with a left orientation](https://bricks.redsift.io/reusable/d3-rs-pies.svg?_datum=[1,200,3100,1000]&orientation=left&fill=global)
-
-### Combination
-
-![Sample bars with a top orientation and time label](https://bricks.redsift.io/reusable/d3-rs-pies.svg?_datum=[{%22v%22:1,%22l%22:1466424812000},{%22v%22:2,%22l%22:1466511212000},{%22v%22:3,%22l%22:1466597612000},{%22v%22:300.5,%22l%22:1466684012000},{%22v%22:4000,%22l%22:1466770412000},{%22v%22:40000,%22l%22:1466856812000}]&orientation=top&labelTime=%25a%20%25d)
+![More data](https://bricks.redsift.cloud/reusable/d3-rs-pies?scale=2&_datum=%5B%7B%22l%22%3A%22(direct)%22%2C%22v%22%3A108%7D%2C%7B%22l%22%3A%22google%22%2C%22v%22%3A105%7D%2C%7B%22l%22%3A%22crunchbase.com%22%2C%22v%22%3A19%7D%2C%7B%22l%22%3A%22techcrunch.com%22%2C%22v%22%3A16%7D%2C%7B%22l%22%3A%22Others%22%2C%22v%22%3A77%7D%5D)
 
 ## Usage
 
