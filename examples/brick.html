@@ -32,7 +32,15 @@
 
     d3.select('#elm').datum([ 1, 4, 6, 2, 8, 9, 7 ,6, 4 ]).call(d3_rs_pies.html('basic-pad').innerRadius(-0.2).padAngle(0.05));
 
-    d3.select('#elm').datum([ 868, 9, 161, 464 ]).call(d3_rs_pies.html('data').size(400).legend(['(none)', 'email', 'organic', 'referral']));
+    /* Custom Tips, ignore the label for the 1st entry and concat legend for rest */
+    let legends = ['(none)', 'email', 'organic', 'referral'];
+    d3.select('#elm')
+      .datum([ 868, 9, 161, 464 ])
+      .call(d3_rs_pies.html('data')
+              .size(400)
+              .legend(legends)
+              .tipHtml((d, i) => `${i === 0 ? '' : legends[i] + ': '}${d}`)
+      );
 
     d3.select('#elm')
           .datum([{"v":1,"l":1466424812000},{"v":2,"l":1466511212000},{"v":3,"l":1466597612000},{"v":300.5,"l":1466684012000},{"v":4000,"l":1466770412000},{"v":40000,"l":1466856812000}])
