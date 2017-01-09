@@ -1,0 +1,38 @@
+<html>
+  <head>
+    <style>
+      
+    body {
+      margin: 0px;
+    }
+    
+    svg {
+      background-color: antiquewhite;
+      margin: 1em;
+    }
+
+    </style>    
+  </head>
+  <body>
+    <div id="elm"></div>
+        
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="/d3-rs-pies.umd-es2015.js"></script>
+    <script>
+
+    'use strict';
+
+    const rnd = () => [0, 0, 0].map( () => (Math.random() + 1).toString(36).slice(2,5) );
+
+    let animated = d3_rs_pies.html();       
+    d3.select('#elm').datum([ 1, 2 ]).call(animated);
+    setInterval(() => d3.select('#elm')
+                        .datum([ Math.random(), Math.random(), Math.random() ])
+                        .transition().call(animated.legend(rnd())) 
+                      , 1000);
+
+
+
+    </script>
+  </body>
+</html>
