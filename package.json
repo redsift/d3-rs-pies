@@ -1,6 +1,6 @@
 {
   "name": "@redsift/d3-rs-pies",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Generates pie charts using D3v4.",
   "keywords": [
     "pie",
@@ -34,7 +34,7 @@
   "dependencies": {
     "@redsift/d3-rs-intl": "^0.0.2",
     "@redsift/d3-rs-legends": "^0.1.0",
-    "@redsift/d3-rs-svg": "^0.4.0",
+    "@redsift/d3-rs-svg": "^0.5.2",
     "@redsift/d3-rs-theme": "^0.4.1",
     "@redsift/d3-rs-tip": "^0.3.2",
     "d3-format": "^1.0.0",
