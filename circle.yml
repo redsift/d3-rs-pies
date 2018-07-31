@@ -1,19 +1,16 @@
 machine:
   node:
-    version: 8.0.0
+    version: 8.10.0
   environment:
     S3_BUCKET: redsift-static
     NAME: d3-rs-pies
 
 checkout:
-  pre:
-    - npm install -g npm
   post:
     - git fetch --tags
 
 dependencies:
   override:
-    - echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
     - npm install
     - mv ./distribution ${CIRCLE_ARTIFACTS}/distribution
 
@@ -25,9 +22,10 @@ deployment:
   production:
     branch: /release-.*/
     commands:
-      - sudo pip install awscli
+      - echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
       - echo "Publishing to NPM"
       - npm publish --access=public
+      - sudo pip install awscli
       - echo "Uploading to S3 bucket..."
       - aws s3 cp ${CIRCLE_ARTIFACTS}/distribution s3://$S3_BUCKET/reusable/$NAME/latest --recursive --acl public-read --cache-control max-age=7200,public
       - |
