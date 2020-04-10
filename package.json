@@ -1,6 +1,6 @@
 {
   "name": "@redsift/d3-rs-pies",
-  "version": "0.1.4",
+  "version": "0.2.2",
   "description": "Generates pie charts using D3v4.",
   "keywords": [
     "pie",
